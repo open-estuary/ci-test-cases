@@ -1,25 +1,28 @@
 #!/bin/bash
 
 USERNAME="testing"
-#distro="ubuntu"
+PASSWD="test123"
+
 . ./sys_info.sh
 
 function add_user()
 {
     case $distro in
         "ubuntu" | "debian" )
-            ./../../ubuntu/scripts/ubuntu_expect_adduser.sh $USERNAME
+            adduser $USERNAME
+            ./expect_adduser.sh $USERNAME $PASSWD
             ;;
         "fedora" )
             useradd $USERNAME -d /home/$USERNAME
-            ./../../fedora/scripts/fedora_expect_adduser.sh $USERNAME
+            ./expect_adduser.sh $USERNAME $PASSWD
             ;;
         "opensuse" )
+            useradd $USERNAME -d /home/$USERNAME
+            ./expect_adduser.sh $USERNAME $PASSWD
             ;;
         "centos" )
             adduser $USERNAME
-            PASSWD="open1234asd"
-            ./../../centos/scripts/centos_expect_adduser.sh $USERNAME $PASSWD
+            ./expect_adduser.sh $USERNAME $PASSWD
             ;;
     esac
 }

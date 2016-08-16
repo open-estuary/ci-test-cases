@@ -1,6 +1,8 @@
 #!/bin/bash
 
 USERNAME="testing"
+PASSWD="test123"
+
 . ./sys_info.sh
 
 function auto_login()
@@ -9,15 +11,15 @@ function auto_login()
 set timeout 60
 spawn ssh ${USERNAME}@localhost
   expect {
-    "password:" 
+    "password:"
     {
-      send "${USERNAME}\r"
+      send "${PASSWD}\r"
     }
     "(yes/no)?"
     {
       send "yes\r"
       expect "password:"
-      send "${USERNAME}\r"
+      send "${PASSWD}\r"
     }
 expect "testing@"
 send "pwd\r"
