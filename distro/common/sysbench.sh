@@ -3,6 +3,7 @@
 pushd ./utils
 . ./sys_info.sh
 popd
+
 log_file="mysql_sysbench.log"
 
 set -x
@@ -110,7 +111,7 @@ expect eof
 EOF
 print_info $? prepare_test_database
 
-if [ $max_requests -eq 0 ]; then 
+if [ $max_requests -eq 0 ]; then
     max_requests=100000
 fi
 set -x
@@ -119,7 +120,7 @@ test_name="oltp"
 
 sys_str="sysbench \
   --db-driver=mysql \
-  --mysql-table-engine=innodb \
+  --mysql-table-engine=$mysql_table_engine \
   --oltp-table-size=$oltp_table_size \
   --num-threads=$num_threads \
   --mysql-host=$mysql_host \
