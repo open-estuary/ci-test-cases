@@ -12,7 +12,7 @@ function install_softwares()
 {
     declare -A distro_softname_dic
     ubuntu_list='libtool autoconf automake libmysqlclient-dev mysql-client libmysqld-dev bzr expect'
-    opensuse_list='bzr'
+    opensuse_list='mariadb mariadb-client bzr'
     debian_list='bzr'
     centos_list='bzr'
     fedora_list='bzr'
@@ -53,7 +53,6 @@ echo "max_requests are $max_requests"
 
 install_softwares
 if [ "$distro" == "opensuse" ]; then
-    $install_commands 'mariadb mariadb-client'
     systemctl start mysql
 fi
 
