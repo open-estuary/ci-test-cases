@@ -51,9 +51,14 @@ db_driver=mysql
 test_name="oltp"
 echo "max_requests are $max_requests"
 
+install_softwares
+if [ "$distro" == "opensuse" ]; then
+    $install_commands 'mariadb mariadb-client'
+    systemctl start mysql
+fi
+
 $install_commands 'expect'
 ./../${distro}/scripts/${distro}_expect_mysql.sh $mysql_password | tee ${log_file}
-install_softwares
 
 mysql_version=$(mysql --version | awk '{ print $1"-" $2 ": " $3}')
 exists=$(echo $mysql_version|awk -F":" '{print $1}')
