@@ -1,7 +1,7 @@
 #!/bin/bash
 
 USERNAME="testing"
-PASSWD="test123"
+PASSWD="open1234asd"
 
 . ./sys_info.sh
 
@@ -9,7 +9,7 @@ function add_user()
 {
     case $distro in
         "ubuntu" | "debian" )
-            adduser $USERNAME
+            useradd $USERNAME -d /home/$USERNAME
             ./expect_adduser.sh $USERNAME $PASSWD
             ;;
         "fedora" )
