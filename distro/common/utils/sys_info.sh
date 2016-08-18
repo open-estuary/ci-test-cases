@@ -1,8 +1,9 @@
 #!/bin/bash
 
-sys_info=$(uname -a)
 distro=""
-if [ "$(echo $sys_info |grep -E 'UBUNTU|Ubuntu|ubuntu')"x != ""x ]; then 
+sys_info=$(uname -a)
+
+if [ "$(echo $sys_info |grep -E 'UBUNTU|Ubuntu|ubuntu')"x != ""x ]; then
     distro="ubuntu"
 elif [ "$(echo $sys_info |grep -E 'cent|CentOS|centos')"x != ""x ]; then
     distro="centos"
@@ -28,7 +29,7 @@ status_service='systemctl status'
 enable_service='systemctl enable'
 disable_service='systemctl disable'
 
-case $distro in 
+case $distro in
     "ubuntu" | "debian" )
         update_commands='apt-get update -y'
         install_commands='apt-get install -y'
@@ -57,6 +58,7 @@ function print_info()
     else
         result='pass'
     fi
+
     test_name=$2
     echo "the result of $test_name is $result"
     lava-test-case $test_name --result $result

@@ -4,21 +4,22 @@ log_file="ftp_log.log"
 
 function vsftpd_op()
 {
-    operation=$1 
+    operation=$1
     echo "service vsftpd $operation" | tee ${log_file}
     service vsftpd $operation | tee ${log_file}
+
     if [ 0 -ne $? ]; then
         echo "vsftpd $operation failed"
-        lava-test-case vsftpd-$operation --result fail 
+        lava-test-case vsftpd-$operation --result fail
     else
         echo "vsftpd $operation pass"
         lava-test-case vsftpd-$operation --result pass
     fi
 }
 
-ps_exists=$(`service vsftpd status | grep running`)
+ps_exists=$(service vsftpd status | grep running)
 if [ "$ps_exists"x != ""x  ]; then
-    vsftpd_op 'stop' 
+    vsftpd_op 'stop'
 fi
 
 # test case -- start, stop, restart
@@ -43,6 +44,7 @@ if [ "$distro"x == "ubuntu"x  ]; then
 
     service vsftpd start | tee ${log_file}
     service vsftpd status | tee ${log_file}
+
     # for get and put test
 /usr/bin/expect << EOF
     set timeout 100
@@ -51,7 +53,7 @@ if [ "$distro"x == "ubuntu"x  ]; then
     send "\r"
     expect "password:"
     send "root\r"
-    expect "ftp>" 
+    expect "ftp>"
     send "get ftp_get_test.log\r"
     expect {
        "Transfer complete"

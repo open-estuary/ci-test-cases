@@ -3,6 +3,7 @@
 pushd ./utils
 . ./sys_info.sh
 popd
+
 log_file="mysql_sysbench.log"
 
 set -x
@@ -11,7 +12,7 @@ function install_softwares()
 {
     declare -A distro_softname_dic
     ubuntu_list='libtool autoconf automake libmysqlclient-dev mysql-client libmysqld-dev bzr expect'
-    opensuse_list='bzr'
+    opensuse_list='mariadb mariadb-client bzr'
     debian_list='bzr'
     centos_list='bzr'
     fedora_list='bzr'
@@ -50,9 +51,13 @@ db_driver=mysql
 test_name="oltp"
 echo "max_requests are $max_requests"
 
+install_softwares
+if [ "$distro" == "opensuse" ]; then
+    systemctl start mysql
+fi
+
 $install_commands 'expect'
 ./../${distro}/scripts/${distro}_expect_mysql.sh $mysql_password | tee ${log_file}
-install_softwares
 
 mysql_version=$(mysql --version | awk '{ print $1"-" $2 ": " $3}')
 exists=$(echo $mysql_version|awk -F":" '{print $1}')
@@ -110,7 +115,7 @@ expect eof
 EOF
 print_info $? prepare_test_database
 
-if [ $max_requests -eq 0 ]; then 
+if [ $max_requests -eq 0 ]; then
     max_requests=100000
 fi
 set -x
@@ -119,7 +124,7 @@ test_name="oltp"
 
 sys_str="sysbench \
   --db-driver=mysql \
-  --mysql-table-engine=innodb \
+  --mysql-table-engine=$mysql_table_engine \
   --oltp-table-size=$oltp_table_size \
   --num-threads=$num_threads \
   --mysql-host=$mysql_host \
