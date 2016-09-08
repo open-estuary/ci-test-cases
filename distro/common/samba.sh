@@ -2,16 +2,15 @@
 #apt-get install samba
 #smbclient
 #expect
-set -x
+
 pushd ./utils
 . ./sys_info.sh
 popd
-
 USER="guanhe"
 PASSWD="123456"
 NEW_DIR="share"
 CONF_FILE="/etc/samba/smb.conf"
-
+set -x
 deluser $USER
 
 /usr/bin/expect << EOD
