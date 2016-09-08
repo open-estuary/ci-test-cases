@@ -3,9 +3,10 @@
 #smbclient
 #expect
 
-pushd ./utils
-. ./sys_info.sh
+pushd ../../distro/common/utils
+    . ./sys_info.sh
 popd
+
 USER="guanhe"
 PASSWD="123456"
 NEW_DIR="share"
