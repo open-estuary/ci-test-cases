@@ -4,7 +4,7 @@
 #expect
 set -x
 pushd ./utils
-../sys_info.sh
+. ./sys_info.sh
 popd
 
 USER="guanhe"
