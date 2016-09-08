@@ -3,8 +3,8 @@
 #smbclient
 #expect
 
-pushd ../../distro/common/utils
-    . ./sys_info.sh
+pushd ./utils
+. ./sys_info.sh
 popd
 
 USER="guanhe"
