@@ -1,7 +1,11 @@
 #!/bin/bash
-apt-get install samba
+#apt-get install samba
 #smbclient
 #expect
+set -x
+pushd ./utils
+../sys_info.sh
+popd
 
 USER="guanhe"
 PASSWD="123456"
@@ -58,7 +62,10 @@ EOF
 
 /etc/init.d/smbd restart
 if [ $? -ne 0 ];then
+    printf_info 1 smbd_restart
     exit 0
+else
+    printf_info 0 smbd_restart
 fi
 
 /usr/bin/expect <<EOF
