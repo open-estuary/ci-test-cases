@@ -4,6 +4,9 @@ pushd ./utils
 . ./sys_info.sh
 popd
 log_file="mysql_sysbench.log"
+sysbench_tar="http://pkgs.fedoraproject.org/repo/pkgs/sysbench/sysbench-0.4.12.tar.gz/3a6d54fdd3fe002328e4458206392b9d/sysbench-0.4.12.tar.gz"
+sysbench_name="sysbench-0.4.12.tar.gz"
+sysbench_dir="sysbench-0.4.12"
 
 set -x
 
@@ -80,6 +83,15 @@ sysbench --test=cpu help
 if [ $? -ne 0 ]; then
     echo 'sysbench has not been installed success'
     exit 1
+else 
+    wget $sysbench_tar 
+    tar -xvf $sysbench_name
+    pushd $sysbench_dir
+    ./autogen.sh
+    ./configure    --build=x86_64-unknown-linux-gnu --without-mysql
+    make
+    make install 
+    popd
 fi
 
 /usr/bin/expect > /dev/null 2>&1 <<EOF
