@@ -25,7 +25,7 @@ install:
         - automake
         - bzr
         - expect
-
+        - wget
 params:
     VERSION: ''
        

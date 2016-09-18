@@ -81,9 +81,7 @@ done
 $install_commands sysbench  | tee ${log_file}
 sysbench --test=cpu help
 if [ $? -ne 0 ]; then
-    echo 'sysbench has not been installed success'
-    exit 1
-else 
+    echo 'sysbench has not been installed success and install it manually'
     wget $sysbench_tar 
     tar -xvf $sysbench_name
     pushd $sysbench_dir
