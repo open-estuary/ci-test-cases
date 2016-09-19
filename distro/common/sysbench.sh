@@ -99,7 +99,8 @@ case $distro in
     ;;
 esac
 echo "++++++++++++++++++"$mysql_password
-/usr/bin/expect > /dev/null 2>&1 <<EOF
+#/usr/bin/expect > /dev/null 2>&1 <<EOF
+/usr/bin/expect  <<EOF
 set timeout 40
 
 spawn mysql -u$mysql_user -p
