@@ -91,7 +91,14 @@ if [ $? -ne 0 ]; then
     make install 
     popd
 fi
-
+case $distro in
+    "ubuntu" | "debian")
+    $install_commands mysql-server
+    $install_commands mysql-client
+    /etc/init.d/mysql start
+    ;;
+esac
+$install_commands 
 #/usr/bin/expect > /dev/null 2>&1 <<EOF
 /usr/bin/expect  <<EOF
 set timeout 40
