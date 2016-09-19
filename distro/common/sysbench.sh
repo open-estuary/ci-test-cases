@@ -33,7 +33,7 @@ db_driver=mysql
 : ${mysql_user:=$1}
 : ${mysql_user:=root}
 : ${mysql_password:=$2}
-: ${mysql_password:=123456}
+: ${mysql_password:=root}
 : ${mysql_table_engine:=$3}
 : ${mysql_table_engine:=innodb}
 : ${oltp_table_size:=$4}
@@ -98,7 +98,7 @@ case $distro in
     /etc/init.d/mysql start
     ;;
 esac
-$install_commands 
+echo "++++++++++++++++++"$mysql_password
 #/usr/bin/expect > /dev/null 2>&1 <<EOF
 /usr/bin/expect  <<EOF
 set timeout 40
