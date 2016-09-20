@@ -1,10 +1,10 @@
 
 metadata:
-    name: ubuntu-sysbench
+    name: centos-sysbench
     format: "Lava-Test-Shell Test Definition 1.0"
-    description: "ubuntu smoke"
+    description: "centos smoke"
     maintainer:
-        - wuyanjun1027@163.com
+        - gu_an_he@163.com
     scope:
         - functional
         - performance
@@ -26,6 +26,7 @@ install:
         - bzr
         - expect
         - wget
+        - git
 params:
     VERSION: ''
        
