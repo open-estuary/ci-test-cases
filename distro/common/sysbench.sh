@@ -4,10 +4,8 @@ pushd ./utils
 . ./sys_info.sh
 popd
 log_file="mysql_sysbench.log"
-sysbench_tar="http://pkgs.fedoraproject.org/repo/pkgs/sysbench/sysbench-0.4.12.tar.gz/3a6d54fdd3fe002328e4458206392b9d/sysbench-0.4.12.tar.gz"
-sysbench_name="sysbench-0.4.12.tar.gz"
-sysbench_dir="sysbench-0.4.12"
-
+sysbench_git_url="https://github.com/guanhe0/sysbench.git"
+sysbench_dir="sysbench"
 set -x
 
 function install_softwares()
@@ -33,7 +31,7 @@ db_driver=mysql
 : ${mysql_user:=$1}
 : ${mysql_user:=root}
 : ${mysql_password:=$2}
-: ${mysql_password:=root}
+: ${mysql_password:=123456}
 : ${mysql_table_engine:=$3}
 : ${mysql_table_engine:=innodb}
 : ${oltp_table_size:=$4}
@@ -78,29 +76,32 @@ do
 echo $j
 done
 
+sysbench --test=cpu help
+if [ $? -ne 0 ]; then
+
 $install_commands sysbench  | tee ${log_file}
 sysbench --test=cpu help
 if [ $? -ne 0 ]; then
-    echo 'sysbench has not been installed success and install it manually'
-    wget $sysbench_tar 
-    tar -xvf $sysbench_name
-    pushd $sysbench_dir
+    echo 'sysbench has not been installed success'
+    pushd ~
+    git clone $sysbench_git_url
+    cd $sysbench_dir
     ./autogen.sh
-    ./configure    --build=x86_64-unknown-linux-gnu --without-mysql
-    make
-    make install 
-    popd
+    ./configure --without-mysql
+    make 
+    make install
+    popd 
+    sysbench --test=cpu help
+    if [$? -ne 0 ]; then
+    echo "sysbench has not been installed success"
+    exit 1
+    fi
+#   exit 1
 fi
-case $distro in
-    "ubuntu" | "debian")
-    $install_commands mysql-server
-    $install_commands mysql-client
-    /etc/init.d/mysql start
-    ;;
-esac
-echo "++++++++++++++++++"$mysql_password
-#/usr/bin/expect > /dev/null 2>&1 <<EOF
-/usr/bin/expect  <<EOF
+
+fi
+
+/usr/bin/expect > /dev/null 2>&1 <<EOF
 set timeout 40
 
 spawn mysql -u$mysql_user -p
