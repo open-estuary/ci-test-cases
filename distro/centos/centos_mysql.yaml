@@ -27,6 +27,8 @@ install:
         - expect
         - wget
         - git
+        - mysql
+        - mysql-server
 params:
     VERSION: ''
        
