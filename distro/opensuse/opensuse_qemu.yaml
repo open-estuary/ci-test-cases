@@ -1,14 +1,15 @@
 
 metadata:
-    name: docker 
+    name: opensuse-qemu
     format: "Lava-Test-Shell Test Definition 1.0"
-    description: "docker"
+    description: "opensuse qemu"
     maintainer:
-        - wuyanjun1027@163.com
+        - fanghuangcai@163.com
     scope:
         - functional
+        - performance
     os:
-        - ubuntu
+        - opensuse
     devices:
         - d02
         - d03
@@ -19,14 +20,17 @@ params:
 
 install:
     deps:
-        - docker
+        - expect
+        - wget
+        - zlib-devel
+        - glib2-devel
 
 params:
-    VERSION: ''
-       
+    BINURL: 'http://192.168.3.100:8083/open-estuary/v2.3-rc0/d02-arm64/binary/'
+
 run:
     steps:
-        - "cd ./distro/common; ./docker.sh; cd -"
+        - "cd ./distro/common; ./qemu-kvm.sh $BINURL; cd -"
 parse:
     pattern: "^(?!.+ED)(?P<test_case_id>\\w+)\\s+(?P<result>\\w+)\\s+\\d$"
     fixupdict:

@@ -1,14 +1,14 @@
 
 metadata:
-    name: docker 
+    name: lxc
     format: "Lava-Test-Shell Test Definition 1.0"
-    description: "docker"
+    description: "lxc"
     maintainer:
         - wuyanjun1027@163.com
     scope:
         - functional
     os:
-        - ubuntu
+        - opensuse
     devices:
         - d02
         - d03
@@ -19,14 +19,21 @@ params:
 
 install:
     deps:
-        - docker
+        - lxc
+        - apparmor
+        - apparmor-utils
+        - apparmor-abstractions
+        - wget
+        - expect
+        - debootstrap
+        - libvirt-daemon-lxc
 
 params:
     VERSION: ''
-       
+
 run:
     steps:
-        - "cd ./distro/common; ./docker.sh; cd -"
+        - "cd ./distro/common; ./lxc.sh; cd -"
 parse:
     pattern: "^(?!.+ED)(?P<test_case_id>\\w+)\\s+(?P<result>\\w+)\\s+\\d$"
     fixupdict:

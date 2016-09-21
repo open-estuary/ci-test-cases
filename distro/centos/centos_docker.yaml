@@ -8,7 +8,7 @@ metadata:
     scope:
         - functional
     os:
-        - ubuntu
+        - centos
     devices:
         - d02
         - d03
@@ -19,7 +19,8 @@ params:
 
 install:
     deps:
-        - docker
+        - make
+        - wget
 
 params:
     VERSION: ''

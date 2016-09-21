@@ -1,8 +1,8 @@
 
 metadata:
-    name: centos-sysbench
+    name: centos-qemu
     format: "Lava-Test-Shell Test Definition 1.0"
-    description: "centos mysql sysbench"
+    description: "centos qemu"
     maintainer:
         - gu_an_he@163.com
     scope:
@@ -20,19 +20,27 @@ params:
 
 install:
     deps:
-        - libtool
-        - autoconf
-        - automake
-        - bzr
-        - expect
-        - wget
         - git
+        - wget
+        - expect
+        - kvm
+        - virt-manager
+        - virt-install
+        - xauth
+        - qemu
+        - qemu-kvm
+        - qemu-img
+        - libvirt
+        - libvirt-python
+        - libvirt-client
+        - glib2-devel
+
 params:
-    VERSION: ''
+    BINURL: 'http://192.168.3.100:8083/open-estuary/v2.3-rc0/d02-arm64/binary/'
        
 run:
     steps:
-        - "cd ./distro/common; ./sysbench.sh; cd -"
+        - "cd ./distro/common; ./qemu-kvm.sh $BINURL; cd -"
 parse:
     pattern: "^(?!.+ED)(?P<test_case_id>\\w+)\\s+(?P<result>\\w+)\\s+\\d$"
     fixupdict:

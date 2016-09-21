@@ -25,10 +25,13 @@ install:
         - automake
         - bzr
         - expect
+        - mysql-client
+        - libmysqld-dev
+        - libmysqlclient-dev
 
 params:
     VERSION: ''
-       
+
 run:
     steps:
         - "cd ./distro/common; ./sysbench.sh; cd -"
