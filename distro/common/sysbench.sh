@@ -69,13 +69,13 @@ case $distro in
         pushd /etc/yum.repos.d
         if [! -e $buildlogs_centos ]; then
             touch $buildlogs_centos
-            cat >>$buildlogs_centos <<EOF
-            [buildlogs]
-            name=CentOS-builds - Base
-            baseurl=http://buildlogs-seed.centos.org/c7-epel.a64/
-            gpgcheck=0
-            enabled=0
-            EOF
+      #     cat >>$buildlogs_centos <<EOF
+            echo "[buildlogs]" >> $buildlogs_centos
+            echo "name=CentOS-builds - Base" >> $buildlogs_centos
+            echo "baseurl=http://buildlogs-seed.centos.org/c7-epel.a64/" >> $buildlogs_centos
+            echo "gpgcheck=0" >> $buildlogs_centos
+            echo "enabled=0" >> $buildlogs_centos
+
             yum-config-manager --enable buildlogs
             yum list
             yum --enablerepo=buildlogs install mariadb mariadb-server
@@ -209,3 +209,4 @@ else
     echo "cleanup the test data pass"
     print_info 0 cleanup_oltp_test
 fi
+
