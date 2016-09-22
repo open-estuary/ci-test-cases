@@ -164,7 +164,7 @@ if [ $max_requests -eq 0 ]; then
 fi
 set -x
 
-test_name="oltp"
+test_name="/root/sysbench/sysbench/tests/db/oltp.lua"
 
 sys_str="sysbench \
   --db-driver=mysql \
