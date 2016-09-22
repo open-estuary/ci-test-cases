@@ -173,7 +173,7 @@ sys_str="sysbench \
   --num-threads=$num_threads \
   --mysql-host=$mysql_host \
   --mysql-user=$mysql_user \
-  --mysql-password=$mysql_password \
+  --mysql-password=$mysql_password\
   --max-requests=$max_requests\
   --test=${test_name} \
 "
