@@ -20,6 +20,9 @@ case $distro in
 	sudo mv /var/lib/dpkg/info.bak /var/lib/dpkg/info
 	fi
 	;;
+	"centos"
+	sudo $install_commands nginx
+	;;
 esac
 
 sudo service nginx start
