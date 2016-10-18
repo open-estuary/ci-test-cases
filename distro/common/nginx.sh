@@ -1,7 +1,7 @@
 #!/bin/bash
 
 pushd ./utils
-. ./sys_info.sh
+source ./sys_info.sh
 popd
 
 nginx_conf="/etc/nginx/sites-available/default"
