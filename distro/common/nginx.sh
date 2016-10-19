@@ -38,5 +38,5 @@ if [ $? -eq 0 ]; then
 	print_info 0 install_nginx
 else
 	echo "nginx install fail"
-	printf_info 1 install_nginx
+	print_info 1 install_nginx
 fi
