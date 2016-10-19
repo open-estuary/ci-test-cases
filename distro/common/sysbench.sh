@@ -1,19 +1,37 @@
 #!/bin/bash
 
-set -x
-
 pushd ./utils
 . ./sys_info.sh
 popd
-
 log_file="mysql_sysbench.log"
+sysbench_git_url="https://github.com/guanhe0/sysbench.git"
+sysbench_dir="sysbench"
+set -x
+
+function install_softwares()
+{
+    declare -A distro_softname_dic
+    ubuntu_list='libtool autoconf automake libmysqlclient-dev mysql-client libmysqld-dev bzr expect'
+    opensuse_list='bzr'
+    debian_list='bzr'
+    centos_list='bzr'
+    fedora_list='bzr'
+    distro_softname_dic=([ubuntu]=$ubuntu_list [opensuse]=$opensuse_list [debian]=$debian_list [centos]=$centos_list [fedora]=$fedora_list)
+    softwares=${distro_softname_dic[$distro]}
+    echo $update_commands
+    echo $softwares
+    . ./utils/install_update_soft.sh "$update_commands" "$install_commands" "$softwares" $log_file $distro
+    [ $? -ne 0 ] && echo -1
+}
+
+sysbench_dir=sysbench-0.5
 cpu_num=$(grep 'processor' /proc/cpuinfo |sort |uniq |wc -l)
 
 db_driver=mysql
 : ${mysql_user:=$1}
 : ${mysql_user:=root}
 : ${mysql_password:=$2}
-: ${mysql_password:=123456}
+: ${mysql_password:=}
 : ${mysql_table_engine:=$3}
 : ${mysql_table_engine:=innodb}
 : ${oltp_table_size:=$4}
@@ -30,16 +48,42 @@ db_driver=mysql
 : ${db_name:=sbtest}
 #: ${max_requests:=$10}
 : ${max_requests:=100000}
-
-if [ $max_requests -eq 0 ]; then
-    max_requests=100000
-fi
-
+test_name="oltp"
 echo "max_requests are $max_requests"
 
-$restart_service mysql
+$install_commands 'expect'
 ./../${distro}/scripts/${distro}_expect_mysql.sh $mysql_password | tee ${log_file}
+install_softwares
 
+mysql_exist=0
+buildlogs_centos="buildlogs-centos.repo"
+mysql_version=$(mysql --version | awk '{ print $1"-" $2 ": " $3}')
+exists=$(echo $mysql_version|awk -F":" '{print $1}')
+if [ "$exists"x = "mysql-Ver"x ]; then
+    mysql_exist=1;
+fi    
+
+case $distro in
+    "centos" )
+    if [ $mysql_exist eq 0 ]; then
+        pushd /etc/yum.repos.d
+        if [! -e $buildlogs_centos ]; then
+            touch $buildlogs_centos
+      #     cat >>$buildlogs_centos <<EOF
+            echo "[buildlogs]" >> $buildlogs_centos
+            echo "name=CentOS-builds - Base" >> $buildlogs_centos
+            echo "baseurl=http://buildlogs-seed.centos.org/c7-epel.a64/" >> $buildlogs_centos
+            echo "gpgcheck=0" >> $buildlogs_centos
+            echo "enabled=0" >> $buildlogs_centos
+
+            yum-config-manager --enable buildlogs
+            yum list
+            yum --enablerepo=buildlogs install mariadb mariadb-server
+        fi
+        popd
+    fi
+    ;;
+esac
 mysql_version=$(mysql --version | awk '{ print $1"-" $2 ": " $3}')
 exists=$(echo $mysql_version|awk -F":" '{print $1}')
 if [ "$exists"x = "mysql-Ver"x ]; then
@@ -61,17 +105,36 @@ do
 echo $j
 done
 
+sysbench --test=cpu help
+if [ $? -ne 0 ]; then
+
 $install_commands sysbench  | tee ${log_file}
 sysbench --test=cpu help
 if [ $? -ne 0 ]; then
     echo 'sysbench has not been installed success'
+    pushd ~
+    git clone $sysbench_git_url
+    cd $sysbench_dir
+    ./autogen.sh
+    ./configure --without-mysql
+    make 
+    make install
+    popd 
+    sysbench --test=cpu help
+    if [$? -ne 0 ]; then
+    echo "sysbench has not been installed success"
     exit 1
+    fi
+#   exit 1
 fi
 
-/usr/bin/expect > /dev/null 2>&1 <<EOF
+fi
+
+#/usr/bin/expect > /dev/null 2>&1 <<EOF
+/usr/bin/expect  <<EOF
 set timeout 40
 
-spawn mysql -u$mysql_user -p
+spawn mysql -u $mysql_user -p
 expect "*password:"
 send "$mysql_password\r"
 expect "mysql>"
@@ -94,18 +157,23 @@ expect "mysql>"
 send "quit;\r"
 expect eof
 EOF
-
 print_info $? prepare_test_database
 
-test_name="oltp"
+if [ $max_requests -eq 0 ]; then 
+    max_requests=100000
+fi
+set -x
+
+test_name="/root/sysbench/sysbench/tests/db/oltp.lua"
+
 sys_str="sysbench \
   --db-driver=mysql \
-  --mysql-table-engine=$mysql_table_engine \
+  --mysql-table-engine=innodb \
   --oltp-table-size=$oltp_table_size \
   --num-threads=$num_threads \
   --mysql-host=$mysql_host \
   --mysql-user=$mysql_user \
-  --mysql-password=$mysql_password \
+  --mysql-password=$mysql_password\
   --max-requests=$max_requests\
   --test=${test_name} \
 "
@@ -142,3 +210,4 @@ else
     echo "cleanup the test data pass"
     print_info 0 cleanup_oltp_test
 fi
+

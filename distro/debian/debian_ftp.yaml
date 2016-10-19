@@ -1,15 +1,15 @@
 
 metadata:
-    name: centos-sysbench
+    name: ftp
     format: "Lava-Test-Shell Test Definition 1.0"
-    description: "centos mysql sysbench"
+    description: "ftp"
     maintainer:
         - gu_an_he@163.com
     scope:
         - functional
         - performance
     os:
-        - centos
+        - debian
     devices:
         - d02
         - d03
@@ -20,21 +20,14 @@ params:
 
 install:
     deps:
-        - libtool
-        - autoconf
-        - automake
-        - bzr
-        - expect
-        - wget
-        - git
-        - mysql
-        - mysql-server
+         - expect
+         - vsftpd
 params:
-    VERSION: ''
+    BINURL: 'http://192.168.3.100:8083/open-estuary/v2.3-rc0/d02-arm64/binary/'
        
 run:
     steps:
-        - "cd ./distro/common; ./sysbench.sh; cd -"
+        - "cd ./distro/common; ./ftp.sh  cd -"
 parse:
     pattern: "^(?!.+ED)(?P<test_case_id>\\w+)\\s+(?P<result>\\w+)\\s+\\d$"
     fixupdict:

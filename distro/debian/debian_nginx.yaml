@@ -1,15 +1,15 @@
 
 metadata:
-    name: centos-sysbench
+    name: ubuntu-sysbench
     format: "Lava-Test-Shell Test Definition 1.0"
-    description: "centos mysql sysbench"
+    description: "ubuntu smoke"
     maintainer:
-        - gu_an_he@163.com
+        - wuyanjun1027@163.com
     scope:
         - functional
         - performance
     os:
-        - centos
+        - ubuntu
     devices:
         - d02
         - d03
@@ -20,21 +20,14 @@ params:
 
 install:
     deps:
-        - libtool
-        - autoconf
-        - automake
-        - bzr
         - expect
         - wget
-        - git
-        - mysql
-        - mysql-server
 params:
     VERSION: ''
        
 run:
     steps:
-        - "cd ./distro/common; ./sysbench.sh; cd -"
+        - "cd ./distro/common; ./nginx.sh; cd -"
 parse:
     pattern: "^(?!.+ED)(?P<test_case_id>\\w+)\\s+(?P<result>\\w+)\\s+\\d$"
     fixupdict:
