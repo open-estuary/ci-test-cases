@@ -4,11 +4,11 @@ pushd ./utils
 source ./sys_info.sh
 popd
 
-nginx_conf="/etc/nginx/sites-available/default"
 nginx_port=8080
 set -x
 case $distro in
 	"debian" | "ubuntu" )
+	nginx_conf="/etc/nginx/sites-available/default"
 	sudo apt-get install -y nginx
 	if [ $? -ne 0 ]; then
 	sudo mv /var/lib/dpkg/info /var/lib/dpkg/info.bak
@@ -21,6 +21,8 @@ case $distro in
 	fi
 	;;
 	"centos" )
+	nginx_conf="/etc/nginx/nginx.conf"
+	nginx_port=80
 	sudo $install_commands nginx
 	;;
 esac
